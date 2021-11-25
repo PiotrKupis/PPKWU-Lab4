@@ -1,15 +1,35 @@
 package com.example.convert;
 
 import org.json.JSONObject;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 @RestController
 public class ConvertController {
 
-    private final String API = "http://localhost:8080/string/analyze/";
+    private final String API = "http://localhost:8081/analyze/";
+
+    @GetMapping("convert/analyze/{text}/{indirectFormat}/{returnFormat}")
+    public String analyze(@PathVariable("text") String text,
+        @PathVariable("indirectFormat") String indirectFormat,
+        @PathVariable("returnFormat") String returnFormat) {
+
+        System.out.println(text);
+        RestTemplate restTemplate = new RestTemplate();
+
+        String path = String.format("%s/%s/%s", API, text, indirectFormat);
+        System.out.println(path);
+        String analyzedTxt = restTemplate.getForObject(path, String.class);
+
+        System.out.println(analyzedTxt);
+
+        return "ok";
+    }
+
 
     @PostMapping("convert/{inFormat}/{outFormat}")
     public String convert(@PathVariable("inFormat") String inFormat,
