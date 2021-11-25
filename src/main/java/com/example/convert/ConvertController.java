@@ -38,6 +38,16 @@ public class ConvertController {
 
         System.out.println(response);
 
+        if(outFormat.equals("XML")){
+            StringBuilder xml = new StringBuilder();
+            xml.append("<analyze><uppercase>").append(response.getUppercase()).append("</uppercase>");
+            xml.append("<lowercase>").append(response.getLowercase()).append("</lowercase>");
+            xml.append("<specialChars>").append(response.getSpecialChars()).append("</specialChars>");
+            xml.append("<numbers>").append(response.getNumbers()).append("</numbers>");
+            xml.append("<combination>").append(response.getCombination()).append("</combination></analyze>");
+            return xml.toString();
+        }
+
         return "ok";
     }
 
