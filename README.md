@@ -1,7 +1,7 @@
 # PPKWU-Lab4   
 
 ## GET /convert/analyze/{text}/{indirectFormat}/{returnFormat}  
-Description: endpoint responsible for getting information about number of uppercase, lowercase, numbers, special characters and if contains its combination in passed string. Additionally it allows to indicate intermediate format of conversion (JSON, XML, CSV, TXT) and type of response (JSON, XML, CSV, TXT)
+Description: endpoint responsible for getting information about number of uppercase, lowercase, numbers, special characters and if contains its combination in passed string. Additionally it allows to indicate intermediate format of conversion (JSON, XML, CSV, TXT) and format of response (JSON, XML, CSV, TXT)
 
 Path: /convert/analyze/{text}/{indirectFormat}/{returnFormat} (GET)  
 Params:  
@@ -51,7 +51,7 @@ uppercase,lowercase,number,specialChars,combination
 ```
 
 input for TXT reponse:  
-/convert/analyze/aaAA12@$/JSON/CSV
+/convert/analyze/aaAA12@$/JSON/TXT
 
 Response:  
 ```
@@ -81,7 +81,8 @@ path: convert/CSV/JSON
 body:  
 ```
 {
-    "text": "uppercase,lowercase,number,specialChars,combination\n2,2,2,2,true"
+    "text": "uppercase,lowercase,number,specialChars,combination
+             2,2,2,2,true"
 }
 ```  
 
