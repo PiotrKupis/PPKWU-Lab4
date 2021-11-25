@@ -11,41 +11,36 @@ import org.springframework.web.client.RestTemplate;
 @RestController
 public class ConvertController {
 
-    private final String API = "http://localhost:8081/analyze/";
-
     @GetMapping("convert/analyze/{text}/{indirectFormat}/{returnFormat}")
     public String analyze(@PathVariable("text") String text,
         @PathVariable("indirectFormat") String indirectFormat,
         @PathVariable("returnFormat") String returnFormat) {
-        Response response;
 
-        System.out.println(text);
         RestTemplate restTemplate = new RestTemplate();
-
+        String API = "http://localhost:8081/analyze/";
         String path = String.format("%s/%s/%s", API, text, indirectFormat);
-        System.out.println(path);
         String data = restTemplate.getForObject(path, String.class);
 
-        System.out.println(data);
-
-        switch (indirectFormat) {
-            case "XML":
-                response = convertXmlToResponse(data);
-                break;
-            case "JSON":
-                response = convertJsonToResponse(data);
-                break;
-            case "TXT":
-                response = convertTxtToResponse(data);
-                break;
-            case "CSV":
-                response = convertCsvToResponse(data);
-                break;
-            default:
-                return "Incorrect format";
+        Response response = getResponseFromString(indirectFormat, data);
+        if (response == null) {
+            return "Incorrect format";
         }
+        return convertResponseToString(returnFormat, response);
+    }
 
-        switch (returnFormat) {
+    @PostMapping("convert/{inFormat}/{outFormat}")
+    public String convert(@PathVariable("inFormat") String inFormat,
+        @PathVariable("outFormat") String outFormat, @RequestBody Text text) {
+
+        Response response = getResponseFromString(inFormat, text.getText());
+        if (response == null) {
+            return "Incorrect format";
+        }
+        return convertResponseToString(outFormat, response);
+    }
+
+    private String convertResponseToString(String format, Response response) {
+        switch (format) {
             case "XML":
                 return "<analyze><uppercase>" + response.getUppercase() + "</uppercase>"
                     + "<lowercase>" + response.getLowercase() + "</lowercase>"
@@ -68,20 +63,15 @@ public class ConvertController {
                 return "uppercase,lowercase,number,specialChars,combination\n"
                     + response.getUppercase()
                     + "," + response.getLowercase() + "," + response.getSpecialChars() + ","
-                    + response.getNumbers() + "," + response.getCombination() + ",";
+                    + response.getNumbers() + "," + response.getCombination();
             default:
                 return "Incorrect format";
         }
     }
 
-
-    @PostMapping("convert/{inFormat}/{outFormat}")
-    public String convert(@PathVariable("inFormat") String inFormat,
-        @PathVariable("outFormat") String outFormat, @RequestBody Text text) {
+    private Response getResponseFromString(String format, String data) {
         Response response;
-        String data = text.getText();
-
-        switch (inFormat) {
+        switch (format) {
             case "XML":
                 response = convertXmlToResponse(data);
                 break;
@@ -95,36 +85,9 @@ public class ConvertController {
                 response = convertCsvToResponse(data);
                 break;
             default:
-                return "Incorrect format";
+                return null;
         }
-
-        switch (outFormat) {
-            case "XML":
-                return "<analyze><uppercase>" + response.getUppercase() + "</uppercase>"
-                    + "<lowercase>" + response.getLowercase() + "</lowercase>"
-                    + "<specialChars>" + response.getSpecialChars() + "</specialChars>"
-                    + "<numbers>" + response.getNumbers() + "</numbers>"
-                    + "<combination>" + response.getCombination() + "</combination></analyze>";
-            case "JSON":
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("upperCase", response.getUppercase());
-                jsonObject.put("lowerCase", response.getLowercase());
-                jsonObject.put("specialChars", response.getSpecialChars());
-                jsonObject.put("numbers", response.getNumbers());
-                jsonObject.put("combination", response.getCombination());
-                return jsonObject.toString();
-            case "TXT":
-                return response.getUppercase() + "\n" + response.getLowercase() + "\n"
-                    + response.getSpecialChars() + "\n" + response.getNumbers() + "\n"
-                    + response.getCombination() + "\n";
-            case "CSV":
-                return "uppercase,lowercase,number,specialChars,combination\n"
-                    + response.getUppercase()
-                    + "," + response.getLowercase() + "," + response.getSpecialChars() + ","
-                    + response.getNumbers() + "," + response.getCombination() + ",";
-            default:
-                return "Incorrect format";
-        }
+        return response;
     }
 
     private Response convertXmlToResponse(String data) {

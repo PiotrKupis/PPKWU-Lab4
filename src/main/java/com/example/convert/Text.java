@@ -1,6 +1,7 @@
 package com.example.convert;
 
 public class Text {
+
     private String text;
 
     public String getText() {
