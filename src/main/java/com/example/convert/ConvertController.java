@@ -38,14 +38,20 @@ public class ConvertController {
 
         System.out.println(response);
 
-        if(outFormat.equals("XML")){
-            StringBuilder xml = new StringBuilder();
-            xml.append("<analyze><uppercase>").append(response.getUppercase()).append("</uppercase>");
-            xml.append("<lowercase>").append(response.getLowercase()).append("</lowercase>");
-            xml.append("<specialChars>").append(response.getSpecialChars()).append("</specialChars>");
-            xml.append("<numbers>").append(response.getNumbers()).append("</numbers>");
-            xml.append("<combination>").append(response.getCombination()).append("</combination></analyze>");
-            return xml.toString();
+        if (outFormat.equals("XML")) {
+            return "<analyze><uppercase>" + response.getUppercase() + "</uppercase>"
+                + "<lowercase>" + response.getLowercase() + "</lowercase>"
+                + "<specialChars>" + response.getSpecialChars() + "</specialChars>"
+                + "<numbers>" + response.getNumbers() + "</numbers>"
+                + "<combination>" + response.getCombination() + "</combination></analyze>";
+        } else if (outFormat.equals("JSON")) {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("upperCase", response.getUppercase());
+            jsonObject.put("lowerCase", response.getLowercase());
+            jsonObject.put("specialChars", response.getSpecialChars());
+            jsonObject.put("numbers", response.getNumbers());
+            jsonObject.put("combination", response.getCombination());
+            return jsonObject.toString();
         }
 
         return "ok";
