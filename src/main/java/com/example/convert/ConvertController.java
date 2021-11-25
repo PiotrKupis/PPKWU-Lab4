@@ -52,6 +52,10 @@ public class ConvertController {
             jsonObject.put("numbers", response.getNumbers());
             jsonObject.put("combination", response.getCombination());
             return jsonObject.toString();
+        } else if (outFormat.equals("TXT")) {
+            return  response.getUppercase() + "\n" + response.getLowercase() + "\n"
+                + response.getSpecialChars() + "\n" + response.getNumbers() + "\n"
+                + response.getCombination() + "\n";
         }
 
         return "ok";
