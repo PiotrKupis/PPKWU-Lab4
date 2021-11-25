@@ -41,7 +41,6 @@ public class ConvertController {
         } else if (inFormat.equals("JSON")) {
             data = data.replaceAll("\\\\", "");
             JSONObject jsonObject = new JSONObject(data);
-
             uppercase = jsonObject.get("uppercase").toString();
             lowercase = jsonObject.get("lowercase").toString();
             specialChars = jsonObject.get("specialChars").toString();
@@ -56,11 +55,12 @@ public class ConvertController {
             combination = rows[4];
         }else if(inFormat.equals("CSV")){
             String[] rows = data.split("\n");
-            uppercase = rows[0];
-            lowercase = rows[1];
-            specialChars = rows[2];
-            numbers = rows[3];
-            combination = rows[4];
+            String[] values = rows[1].split(",");
+            uppercase = values[0];
+            lowercase = values[1];
+            specialChars = values[2];
+            numbers = values[3];
+            combination = values[4];
         }
         else{
             return "Incorrect format";
