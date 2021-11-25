@@ -14,10 +14,8 @@ public class ConvertController {
     @PostMapping("convert/{inFormat}/{outFormat}")
     public String convert(@PathVariable("inFormat") String inFormat,
         @PathVariable("outFormat") String outFormat, @RequestBody Text text) {
-
         Response response;
         String data = text.getText();
-        System.out.println(data);
 
         switch (inFormat) {
             case "XML":
@@ -36,29 +34,33 @@ public class ConvertController {
                 return "Incorrect format";
         }
 
-        System.out.println(response);
-
-        if (outFormat.equals("XML")) {
-            return "<analyze><uppercase>" + response.getUppercase() + "</uppercase>"
-                + "<lowercase>" + response.getLowercase() + "</lowercase>"
-                + "<specialChars>" + response.getSpecialChars() + "</specialChars>"
-                + "<numbers>" + response.getNumbers() + "</numbers>"
-                + "<combination>" + response.getCombination() + "</combination></analyze>";
-        } else if (outFormat.equals("JSON")) {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("upperCase", response.getUppercase());
-            jsonObject.put("lowerCase", response.getLowercase());
-            jsonObject.put("specialChars", response.getSpecialChars());
-            jsonObject.put("numbers", response.getNumbers());
-            jsonObject.put("combination", response.getCombination());
-            return jsonObject.toString();
-        } else if (outFormat.equals("TXT")) {
-            return  response.getUppercase() + "\n" + response.getLowercase() + "\n"
-                + response.getSpecialChars() + "\n" + response.getNumbers() + "\n"
-                + response.getCombination() + "\n";
+        switch (outFormat) {
+            case "XML":
+                return "<analyze><uppercase>" + response.getUppercase() + "</uppercase>"
+                    + "<lowercase>" + response.getLowercase() + "</lowercase>"
+                    + "<specialChars>" + response.getSpecialChars() + "</specialChars>"
+                    + "<numbers>" + response.getNumbers() + "</numbers>"
+                    + "<combination>" + response.getCombination() + "</combination></analyze>";
+            case "JSON":
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("upperCase", response.getUppercase());
+                jsonObject.put("lowerCase", response.getLowercase());
+                jsonObject.put("specialChars", response.getSpecialChars());
+                jsonObject.put("numbers", response.getNumbers());
+                jsonObject.put("combination", response.getCombination());
+                return jsonObject.toString();
+            case "TXT":
+                return response.getUppercase() + "\n" + response.getLowercase() + "\n"
+                    + response.getSpecialChars() + "\n" + response.getNumbers() + "\n"
+                    + response.getCombination() + "\n";
+            case "CSV":
+                return "uppercase,lowercase,number,specialChars,combination\n"
+                    + response.getUppercase()
+                    + "," + response.getLowercase() + "," + response.getSpecialChars() + ","
+                    + response.getNumbers() + "," + response.getCombination() + ",";
+            default:
+                return "Incorrect format";
         }
-
-        return "ok";
     }
 
     private Response convertXmlToResponse(String data) {
