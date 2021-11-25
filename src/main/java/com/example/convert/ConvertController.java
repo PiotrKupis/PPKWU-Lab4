@@ -15,63 +15,81 @@ public class ConvertController {
     public String convert(@PathVariable("inFormat") String inFormat,
         @PathVariable("outFormat") String outFormat, @RequestBody Text text) {
 
+        Response response;
         String data = text.getText();
-        Response response = new Response();
+        System.out.println(data);
 
-        String uppercase = "";
-        String lowercase = "";
-        String specialChars = "";
-        String numbers = "";
-        String combination = "";
-
-        System.out.println(text);
-
-        if (inFormat.equals("XML")) {
-            uppercase = data.substring(data.indexOf("<uppercase>") + "<uppercase>".length(),
-                data.indexOf("</uppercase>"));
-            lowercase = data.substring(data.indexOf("<lowercase>") + "<lowercase>".length(),
-                data.indexOf("</lowercase>"));
-            specialChars = data.substring(
-                data.indexOf("<specialChars>") + "<specialChars>".length(),
-                data.indexOf("</specialChars>"));
-            numbers = data.substring(data.indexOf("<numbers>") + "<numbers>".length(),
-                data.indexOf("</numbers>"));
-            combination = data.substring(data.indexOf("<combination>") + "<combination>".length(),
-                data.indexOf("</combination>"));
-        } else if (inFormat.equals("JSON")) {
-            data = data.replaceAll("\\\\", "");
-            JSONObject jsonObject = new JSONObject(data);
-            uppercase = jsonObject.get("uppercase").toString();
-            lowercase = jsonObject.get("lowercase").toString();
-            specialChars = jsonObject.get("specialChars").toString();
-            numbers = jsonObject.get("numbers").toString();
-            combination = jsonObject.get("combination").toString();
-        }else if(inFormat.equals("TXT")){
-            String[] rows = data.split("\n");
-            uppercase = rows[0];
-            lowercase = rows[1];
-            specialChars = rows[2];
-            numbers = rows[3];
-            combination = rows[4];
-        }else if(inFormat.equals("CSV")){
-            String[] rows = data.split("\n");
-            String[] values = rows[1].split(",");
-            uppercase = values[0];
-            lowercase = values[1];
-            specialChars = values[2];
-            numbers = values[3];
-            combination = values[4];
-        }
-        else{
-            return "Incorrect format";
+        switch (inFormat) {
+            case "XML":
+                response = convertXmlToResponse(data);
+                break;
+            case "JSON":
+                response = convertJsonToResponse(data);
+                break;
+            case "TXT":
+                response = convertTxtToResponse(data);
+                break;
+            case "CSV":
+                response = convertCsvToResponse(data);
+                break;
+            default:
+                return "Incorrect format";
         }
 
-        System.out.println(uppercase);
-        System.out.println(lowercase);
-        System.out.println(numbers);
-        System.out.println(specialChars);
-        System.out.println(combination);
+        System.out.println(response);
 
         return "ok";
+    }
+
+    private Response convertXmlToResponse(String data) {
+        Response response = new Response();
+        response.setUppercase(data.substring(data.indexOf("<uppercase>") + "<uppercase>".length(),
+            data.indexOf("</uppercase>")));
+        response.setLowercase(data.substring(data.indexOf("<lowercase>") + "<lowercase>".length(),
+            data.indexOf("</lowercase>")));
+        response.setSpecialChars(data.substring(
+            data.indexOf("<specialChars>") + "<specialChars>".length(),
+            data.indexOf("</specialChars>")));
+        response.setNumbers(data.substring(data.indexOf("<numbers>") + "<numbers>".length(),
+            data.indexOf("</numbers>")));
+        response.setCombination(
+            data.substring(data.indexOf("<combination>") + "<combination>".length(),
+                data.indexOf("</combination>")));
+        return response;
+    }
+
+    private Response convertTxtToResponse(String data) {
+        Response response = new Response();
+        String[] rows = data.split("\n");
+        response.setUppercase(rows[0]);
+        response.setLowercase(rows[1]);
+        response.setSpecialChars(rows[2]);
+        response.setNumbers(rows[3]);
+        response.setCombination(rows[4]);
+        return response;
+    }
+
+    private Response convertJsonToResponse(String data) {
+        Response response = new Response();
+        data = data.replaceAll("\\\\", "");
+        JSONObject jsonObject = new JSONObject(data);
+        response.setUppercase(jsonObject.get("uppercase").toString());
+        response.setLowercase(jsonObject.get("lowercase").toString());
+        response.setSpecialChars(jsonObject.get("specialChars").toString());
+        response.setNumbers(jsonObject.get("numbers").toString());
+        response.setCombination(jsonObject.get("combination").toString());
+        return response;
+    }
+
+    private Response convertCsvToResponse(String data) {
+        Response response = new Response();
+        String[] rows = data.split("\n");
+        String[] values = rows[1].split(",");
+        response.setUppercase(values[0]);
+        response.setLowercase(values[1]);
+        response.setSpecialChars(values[2]);
+        response.setNumbers(values[3]);
+        response.setCombination(values[4]);
+        return response;
     }
 }

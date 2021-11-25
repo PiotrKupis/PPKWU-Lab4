@@ -1,56 +1,64 @@
 package com.example.convert;
 
-/**
- * Class responsible for keeping information about processed string.
- */
 public class Response {
 
-    private Long uppercase;
-    private Long lowercase;
-    private Long numbers;
-    private Long specialChars;
-    private Boolean combination;
+    private String uppercase;
+    private String lowercase;
+    private String numbers;
+    private String specialChars;
+    private String combination;
 
     public Response() {
     }
 
-    public void setUppercase(Long uppercase) {
-        this.uppercase = uppercase;
-    }
-
-    public void setLowercase(Long lowercase) {
-        this.lowercase = lowercase;
-    }
-
-    public void setNumbers(Long numbers) {
-        this.numbers = numbers;
-    }
-
-    public void setSpecialChars(Long specialChars) {
-        this.specialChars = specialChars;
-    }
-
-    public void setCombination(Boolean combination) {
-        this.combination = combination;
-    }
-
-    public Long getUppercase() {
+    public String getUppercase() {
         return uppercase;
     }
 
-    public Long getLowercase() {
+    public void setUppercase(String uppercase) {
+        this.uppercase = uppercase;
+    }
+
+    public String getLowercase() {
         return lowercase;
     }
 
-    public Long getNumbers() {
+    public void setLowercase(String lowercase) {
+        this.lowercase = lowercase;
+    }
+
+    public String getNumbers() {
         return numbers;
     }
 
-    public Long getSpecialChars() {
+    public void setNumbers(String numbers) {
+        this.numbers = numbers;
+    }
+
+    public String getSpecialChars() {
         return specialChars;
     }
 
-    public Boolean getCombination() {
+    public void setSpecialChars(String specialChars) {
+        this.specialChars = specialChars;
+    }
+
+    public String getCombination() {
         return combination;
+    }
+
+    public void setCombination(String combination) {
+        this.combination = combination;
+    }
+
+    @Override
+    public String toString() {
+        return "Response{" +
+            "uppercase='" + uppercase + '\'' +
+            ", lowercase='" + lowercase + '\'' +
+            ", numbers='" + numbers + '\'' +
+            ", specialChars='" + specialChars + '\'' +
+            ", combination='" + combination + '\'' +
+            '}';
     }
 }
