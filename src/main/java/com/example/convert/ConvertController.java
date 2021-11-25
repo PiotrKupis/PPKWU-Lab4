@@ -17,17 +17,61 @@ public class ConvertController {
     public String analyze(@PathVariable("text") String text,
         @PathVariable("indirectFormat") String indirectFormat,
         @PathVariable("returnFormat") String returnFormat) {
+        Response response;
 
         System.out.println(text);
         RestTemplate restTemplate = new RestTemplate();
 
         String path = String.format("%s/%s/%s", API, text, indirectFormat);
         System.out.println(path);
-        String analyzedTxt = restTemplate.getForObject(path, String.class);
+        String data = restTemplate.getForObject(path, String.class);
 
-        System.out.println(analyzedTxt);
+        System.out.println(data);
 
-        return "ok";
+        switch (indirectFormat) {
+            case "XML":
+                response = convertXmlToResponse(data);
+                break;
+            case "JSON":
+                response = convertJsonToResponse(data);
+                break;
+            case "TXT":
+                response = convertTxtToResponse(data);
+                break;
+            case "CSV":
+                response = convertCsvToResponse(data);
+                break;
+            default:
+                return "Incorrect format";
+        }
+
+        switch (returnFormat) {
+            case "XML":
+                return "<analyze><uppercase>" + response.getUppercase() + "</uppercase>"
+                    + "<lowercase>" + response.getLowercase() + "</lowercase>"
+                    + "<specialChars>" + response.getSpecialChars() + "</specialChars>"
+                    + "<numbers>" + response.getNumbers() + "</numbers>"
+                    + "<combination>" + response.getCombination() + "</combination></analyze>";
+            case "JSON":
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("upperCase", response.getUppercase());
+                jsonObject.put("lowerCase", response.getLowercase());
+                jsonObject.put("specialChars", response.getSpecialChars());
+                jsonObject.put("numbers", response.getNumbers());
+                jsonObject.put("combination", response.getCombination());
+                return jsonObject.toString();
+            case "TXT":
+                return response.getUppercase() + "\n" + response.getLowercase() + "\n"
+                    + response.getSpecialChars() + "\n" + response.getNumbers() + "\n"
+                    + response.getCombination() + "\n";
+            case "CSV":
+                return "uppercase,lowercase,number,specialChars,combination\n"
+                    + response.getUppercase()
+                    + "," + response.getLowercase() + "," + response.getSpecialChars() + ","
+                    + response.getNumbers() + "," + response.getCombination() + ",";
+            default:
+                return "Incorrect format";
+        }
     }
 
 
