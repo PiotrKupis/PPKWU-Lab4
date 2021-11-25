@@ -54,6 +54,16 @@ public class ConvertController {
             specialChars = rows[2];
             numbers = rows[3];
             combination = rows[4];
+        }else if(inFormat.equals("CSV")){
+            String[] rows = data.split("\n");
+            uppercase = rows[0];
+            lowercase = rows[1];
+            specialChars = rows[2];
+            numbers = rows[3];
+            combination = rows[4];
+        }
+        else{
+            return "Incorrect format";
         }
 
         System.out.println(uppercase);
