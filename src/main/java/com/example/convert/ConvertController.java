@@ -47,6 +47,13 @@ public class ConvertController {
             specialChars = jsonObject.get("specialChars").toString();
             numbers = jsonObject.get("numbers").toString();
             combination = jsonObject.get("combination").toString();
+        }else if(inFormat.equals("TXT")){
+            String[] rows = data.split("\n");
+            uppercase = rows[0];
+            lowercase = rows[1];
+            specialChars = rows[2];
+            numbers = rows[3];
+            combination = rows[4];
         }
 
         System.out.println(uppercase);
